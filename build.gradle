@@ -8,7 +8,9 @@ group = 'com.banking'
 version = '0.0.1-SNAPSHOT'
 
 java {
-    sourceCompatibility = '21'
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 repositories {
@@ -25,8 +27,9 @@ dependencies {
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
-
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+testImplementation 'org.mockito:mockito-core'
+testImplementation 'com.h2database:h2'
 }
 
 tasks.named('test') {
