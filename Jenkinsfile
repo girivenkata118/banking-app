@@ -1,34 +1,72 @@
 pipeline {
+
     agent any
+
+    tools {
+        jdk 'Java 21'
+    }
+
+    environment {
+        APP_NAME = "banking-app"
+    }
 
     stages {
 
-        stage('Checkout') {
+        stage('Checkout Code') {
             steps {
-                echo 'Checking out code...'
+                echo 'Pulling code from GitHub...'
+                git branch: 'main',
+                    url: 'https://github.com/girivenkata118/banking-app.git'
             }
         }
 
-        stage('Build') {
+        stage('Verify Java') {
             steps {
+                sh 'java -version'
+            }
+        }
+
+        stage('Clean Project') {
+            steps {
+                echo 'Cleaning old build files...'
+                sh './gradlew clean'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                echo 'Running unit tests...'
+                sh './gradlew test'
+            }
+        }
+
+        stage('Build Application') {
+            steps {
+                echo 'Building Spring Boot application...'
                 sh './gradlew build'
             }
         }
 
-        stage('Test') {
+        stage('List Generated JAR') {
             steps {
-                sh './gradlew test'
+                echo 'Generated JAR files:'
+                sh 'ls -lh build/libs'
             }
         }
     }
 
     post {
+
         success {
-            echo 'Build Successful!'
+            echo 'Pipeline completed successfully!'
         }
 
         failure {
-            echo 'Build Failed!'
+            echo 'Pipeline failed!'
+        }
+
+        always {
+            echo 'Pipeline execution finished.'
         }
     }
 }
